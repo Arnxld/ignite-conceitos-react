@@ -3,6 +3,7 @@ import { useState } from 'react'
 import '../styles/tasklist.scss'
 
 import { FiTrash, FiCheckSquare } from 'react-icons/fi'
+import { transform } from '@babel/core';
 
 interface Task {
   id: number;
@@ -11,19 +12,64 @@ interface Task {
 }
 
 export function TaskList() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);                                         
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    
+    const id = Math.floor(Math.random() * 1001) // criar um número aleatório de 0 a 1000
+
+    
+    if(newTaskTitle) { // checa se um nome foi escrito
+
+      const newTask = { // cria o objeto da nova task
+        id,
+        title: newTaskTitle,
+        isComplete: false
+      }
+
+      setTasks([...tasks, newTask]) // adiciona a nova task ao estado de tasks
+    }
+    else {
+      window.alert("A task deve ter um título") // caso não tenha um título escrita, acusa o erro.
+    }
+    
   }
 
   function handleToggleTaskCompletion(id: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+
+    const taskIndex = tasks.findIndex(task => task?.id == id)
+
+    const foundTask = tasks[taskIndex]
+
+    foundTask.isComplete = !foundTask.isComplete
+
+    const newTasksArray = tasks.map(task => {
+      if (task.id == id) {
+        task.isComplete == !task.isComplete
+        return task
+      }
+      else {
+        return task
+      }
+    })
+
+    setTasks(newTasksArray)
   }
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
+
+    const newTasksArray = tasks.filter(task => {
+      return task.id !== id
+    })
+
+    setTasks(newTasksArray)
+
+
+
   }
 
   return (
